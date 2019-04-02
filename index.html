@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <!-- ace code editor -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ace.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ext-language_tools.js"></script>
+
+        <!-- threejs stuff -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
+
+        <!-- local -->
+        <script type="text/javascript" src="js/lib/shader_material.js"></script>
+        <script type="text/javascript" src="js/lib/app.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/ace_init.js"></script>
+
+        <style type="text/css" media="screen">
+        #editor
+        {
+            position:absolute;
+            top:2rem;
+            left:0;
+            right:50%;
+            bottom:0;
+            left:0;
+        }
+
+        canvas
+        {
+            position:absolute;
+            left:50%;
+            top:2rem;
+            bottom:0;
+            height:calc(100% - 2rem);
+            right:0;
+            background-color:black;
+            width:50%;
+        }
+
+        nav
+        {
+            background-color:#666;
+            height:2rem;
+            display:flex;
+        }
+
+        body
+        {
+            padding:0;
+            margin:0;
+            height:100vh;
+        }
+
+        button
+        {
+            background-color:transparent;
+            border:2px solid white;
+            color:white;
+        }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <button>Swap vert/frag</button>
+        </nav>
+        <section id="editor"></section>
+        <canvas></canvas>
+    </body>
+</html>
