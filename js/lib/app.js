@@ -6,10 +6,23 @@ class ShaderEditorApp
      */
     constructor(material)
     {
-        this.material = material;
+        //Build a new shader factory
+        this.factory = new ShaderFactory(this);
+
+        //this.material = material;
         window.addEventListener("load", this.onLoad.bind(this));
     }
 
+
+    get fragment()
+    {
+        return document.querySelector("#fragment").innerText;
+    }
+
+    get vertex()
+    {
+        return document.querySelector("#vertex").innerText;
+    }
 
     /**
      * Alias for document.querySelector("canvas")
@@ -27,17 +40,90 @@ class ShaderEditorApp
     {
         //Set up the canvas
         this.setupCanvas();
+        this.setupEditor();
 
         //Set stuff up
-        this.setupScene();
         this.setupRenderer();
-        this.setupCamera(this.scene);
         
+        //Set up more stuff
+        this.setupScene();
+        this.setupCamera(this.scene);
+    
+        //Set up material
+        this.material = this.buildMaterial(0, 0);
+
         //Build object
         this.buildObject();
 
         //And call animate
         this.animate();
+    }
+
+
+    setupEditor()
+    {
+        //Make the editor, attach to #editor
+        this.editor = ace.edit("editor");
+
+        //Set the editor's theme
+        this.editor.setTheme("ace/theme/monokai");
+
+        //And set the mode to glsl syntax highlighting
+        this.editor.session.setMode("ace/mode/glsl");
+
+        //Set the options
+        this.editor.setOptions
+        ({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: false
+        });
+
+        //Now, set the value to the default frag
+        this.editor.setValue(this.fragment);
+
+        //When the editor has changed.. recompile
+        this.editor.on("change", this.recompile.bind(this));
+    }
+
+    recompile()
+    {
+        //set #vertex and #fragment
+        document.querySelector("#fragment").innerText = this.editor.getValue();
+
+        this.factory.createProgram(this.fragment, this.vertex);
+
+        //this.material = mat;
+        //this.mesh.material = mat;
+
+        //let mat = this.buildMaterial(this.fragment, 0);
+        //this.material = mat;
+        //this.mesh.material = this.material;
+    }
+
+    buildMaterial(fragment, vertex)
+    {
+        if(fragment == 0)
+            fragment = this.fragment;
+
+        if(vertex == 0)
+            vertex = this.vertex;
+
+        let mat = null;
+
+        mat = new THREE.ShaderMaterial
+        ({
+            uniforms:
+            {
+                time: { value: +new Date() },
+                resolution: { value: new THREE.Vector2() }
+            },
+
+            vertexShader: vertex,
+            fragmentShader: fragment
+        });
+
+        return mat;
     }
 
     setupCanvas()
@@ -60,14 +146,14 @@ class ShaderEditorApp
 
     buildObject()
     {
-        let geometry = new THREE.SphereGeometry(1, 32, 32);
-        let light = new THREE.PointLight(0xffffff, 1, 10);
+        this.geometry = new THREE.SphereGeometry(1, 32, 32);
+        this.light = new THREE.PointLight(0xffffff, 1, 10);
 
-        light.position.set(0, 2, 0);
+        this.light.position.set(0, 2, 0);
 
-        let mesh = new THREE.Mesh(geometry, this.material);
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
         
-        this.scene.add(mesh);
+        this.scene.add(this.mesh);
     }
 
     /**
@@ -111,8 +197,14 @@ class ShaderEditorApp
         scene.add(this.camera);
     }
 
+    updateUniforms()
+    {
+        this.material.uniforms.time = +(new Date());
+    }
+
     render()
     {
+        this.updateUniforms();
         this.renderer.render(this.scene, this.camera);
     }
 

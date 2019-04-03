@@ -10,7 +10,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
 
         <!-- local -->
-        <script type="text/javascript" src="js/lib/shader_material.js"></script>
+        <script type="text/javascript" src="js/lib/shader_factory.js"></script>
         <script type="text/javascript" src="js/lib/app.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
         <script type="text/javascript" src="js/ace_init.js"></script>
@@ -59,10 +59,33 @@
             color:white;
         }
         </style>
+
+        <script id="vertex" type="x-shader/x-vertex">
+uniform float time;
+uniform vec2 resolution;
+
+void main()
+{
+    gl_Position = vec4(position, 1.0); 
+}
+        </script>
+
+        <script id="fragment" type="x-shader/x-fragment">
+uniform float time;
+uniform vec2 resolution;
+void main()
+{
+    float x = mod(time + gl_FragCoord.x, 20.) < 10. ? 1. : 0.; 
+    float y = mod(time + gl_FragCoord.y, 20.) < 10. ? 1. : 0.;
+    gl_FragColor = vec4(vec3(min(x, y)), 1.);
+}
+        </script>
+
     </head>
     <body>
         <nav>
             <button>Swap vert/frag</button>
+            <pre>error goes here</pre>
         </nav>
         <section id="editor"></section>
         <canvas></canvas>
