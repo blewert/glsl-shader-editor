@@ -115,7 +115,7 @@ class ShaderEditorApp
         ({
             uniforms:
             {
-                time: { value: +new Date() },
+                time: { type:'f', value: performance.now() },
                 resolution: { value: new THREE.Vector2() }
             },
 
@@ -199,7 +199,7 @@ class ShaderEditorApp
 
     updateUniforms()
     {
-        this.material.uniforms.time = +(new Date());
+        this.material.uniforms.time.value = performance.now();
     }
 
     render()

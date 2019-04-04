@@ -86,7 +86,7 @@ class ShaderFactory
             if(match == null)
                 continue;
 
-            let errorLine = +match[1] - 99;
+            let errorLine = +match[1] - 98;
             let errorMsg  = match[2];
 
             foundErrors.push({
